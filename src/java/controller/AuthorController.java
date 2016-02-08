@@ -23,7 +23,7 @@ import model.AuthorService;
  */
 @WebServlet(name = "AuthorController", urlPatterns = {"/AuthorController"})
 public class AuthorController extends HttpServlet {
-
+     private final String RESPONSE_PAGE = "/ResponsePage.jsp";
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -50,7 +50,7 @@ public class AuthorController extends HttpServlet {
         }
         
         RequestDispatcher view =
-                    request.getRequestDispatcher("/ResponsePage.jsp");
+                    request.getRequestDispatcher(RESPONSE_PAGE);
             view.forward(request, response);
 
     }

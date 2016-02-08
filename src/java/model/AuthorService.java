@@ -19,8 +19,8 @@ public class AuthorService {
 //        Author king = new Author(1001, "Stephen King", new Date());
 //        Author loftus = new Author(1002, "John w. Loftus", new Date());
     
-        private List<Author> authorList = new ArrayList<>(Arrays.asList
-        (new Author(1000, "Jack Kerouac"), new Author(1001, "Stephen King"), new Author(1002, "John w. Loftus")));
+    private List<Author> authorList = new ArrayList<>(Arrays.asList
+        (new Author(1000, "Jack Kerouac"), new Author(1000, "Stephen King"), new Author(1002, "John w. Loftus")));
         
             
 
@@ -28,7 +28,10 @@ public class AuthorService {
         return authorList;
     }
 
-    public void setAuthorList(List<Author> authorList) {
+    public void setAuthorList(List<Author> authorList) throws IllegalArgumentException{
+        if( authorList.isEmpty()){
+            throw new IllegalArgumentException();
+        }
         this.authorList = authorList;
     }
 

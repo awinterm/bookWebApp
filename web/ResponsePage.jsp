@@ -51,7 +51,7 @@
                 </tr>
             </thead>
             
-            
+            ${errorMsg}
             <tbody>
             
                     <c:forEach var="author" items="${authorList}">

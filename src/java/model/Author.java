@@ -16,28 +16,42 @@ public class Author {
     private int authorId;
     private String authorName;
     private Date dateAdded;
-
+    private final String ERROR_MSG = "There is a problem with the DataBase :(";
+    
     public Author() {
     }
 
-    public Author(int authorId) {
+    public Author(int authorId) throws IllegalArgumentException {
+          if(authorId < 1000){
+            throw new IllegalArgumentException(ERROR_MSG);
+        }
+        
         this.authorId = authorId;
     }
     
 // This constructor is to simplify the hard coding of this list later
     
-    public Author(int authorId, String authorName) {
+    public Author(int authorId, String authorName) throws IllegalArgumentException {
+        if(authorId < 1000 || authorName.isEmpty()){
+            throw new IllegalArgumentException(ERROR_MSG);
+        }
+        
+        
         this.authorId = authorId;
         this.authorName = authorName;
         this.dateAdded = new Date();
     }
     
     
-    public int getAuthorId() {
+    public int getAuthorId()  {
         return authorId;
     }
 
-    public void setAuthorId(int authorId) {
+    public void setAuthorId(int authorId) throws IllegalArgumentException {
+        if(authorId < 1000){
+            throw new IllegalArgumentException(ERROR_MSG);
+        }
+        
         this.authorId = authorId;
     }
 
@@ -45,7 +59,10 @@ public class Author {
         return authorName;
     }
 
-    public void setAuthorName(String authorName) {
+    public void setAuthorName(String authorName) throws IllegalArgumentException {
+        if(authorName.isEmpty()){
+            throw new IllegalArgumentException(ERROR_MSG);
+        }
         this.authorName = authorName;
     }
 
@@ -53,7 +70,10 @@ public class Author {
         return dateAdded;
     }
 
-    public void setDateAdded(Date dateAdded) {
+    public void setDateAdded(Date dateAdded) throws IllegalArgumentException {
+        if(dateAdded == null){
+            throw new IllegalArgumentException(ERROR_MSG);
+        }
         this.dateAdded = dateAdded;
     }
 
