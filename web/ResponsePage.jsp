@@ -51,7 +51,7 @@
                 </tr>
             </thead>
             
-            ${errorMsg}
+           
             <tbody>
             
                     <c:forEach var="author" items="${authorList}">
@@ -70,6 +70,7 @@
            </tbody>
             
         </table>
+        <h1>${errorMsg}</h1>
         </div>
         </div>
         </div>
