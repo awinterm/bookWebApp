@@ -1,4 +1,4 @@
-/*
+ /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
@@ -20,7 +20,7 @@ public class AuthorService {
 //        Author loftus = new Author(1002, "John w. Loftus", new Date());
     
     private List<Author> authorList = new ArrayList<>(Arrays.asList
-        (new Author(1000, "Jack Kerouac"), new Author(1000, "Stephen King"), new Author(1002, "John w. Loftus")));
+        (new Author(1000, "Jack Kerouac"), new Author(1001, "Stephen King"), new Author(1002, "John w. Loftus")));
         
             
 
