@@ -7,7 +7,14 @@ package model;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -30,4 +37,64 @@ public class MySqlDBStrategy implements DBStrategy {
     public void closeConnection() throws SQLException {
         conn.close();
     }
+    /**
+     * Must open and close a connection when using this method.
+     * Future optimizations may include changing the return type to an array.
+     * It will save on memory. Because ArrayLists have empty slots. 
+     * 
+     * @param tableName
+     * @param maxRecords - Limits result set to this number, or if maxRecords is zero (0) then no limit
+     * @return 
+     * @throws java.sql.SQLException 
+     */
+    @Override
+    public List<Map<String, Object>> findAllRecords(String tableName, 
+            int maxRecords) throws SQLException{
+        
+        // create MySql statement
+        String sql;
+        if (maxRecords < 1) {
+        
+        sql = "select * from " + tableName;
+            } else {
+        sql = "select * from " + tableName + " limit " + maxRecords;
+                    }
+        // sorting could happen here
+        Statement stmt = conn.createStatement();
+        // create result set object.
+        ResultSet rs = stmt.executeQuery(sql);
+        // get meta data
+        ResultSetMetaData rsmd = rs.getMetaData();
+        // find out how many columns there are in the table.
+        int columnCount = rsmd.getColumnCount();
+        // a list of maps to store our records
+        List<Map<String, Object>> records = new ArrayList<>();
+        
+        while ( rs.next()){
+            // loop for saving records into our map.
+            Map<String, Object> record = new HashMap<>();
+                for(int colNo = 1; colNo <= columnCount ; colNo++){
+                    // get field of this column
+                    Object colData = rs.getObject(colNo);
+                    // get columnName
+                    String columnName = rsmd.getColumnName(colNo);
+                    // put them into a map.
+                    record.put(columnName, colData);
+                }
+                // put our map into our list of maps.
+                records.add(record);
+        }
+                // return this list of maps
+        return records;
+    }
+    
+    public static void main(String[] args) throws ClassNotFoundException, SQLException {
+        
+        DBStrategy db = new MySqlDBStrategy();
+        db.openConnection("com.mysql.jdbc.Driver", "jdbc:mysql://localhost:3306/book", "root", "admin");
+        List<Map<String, Object>> rawData = db.findAllRecords("author", 0);
+        db.closeConnection();
+        System.out.println(rawData);
+    }
+    
 }
