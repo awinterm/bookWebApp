@@ -6,6 +6,7 @@
 package model;
 
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -87,14 +88,37 @@ public class MySqlDBStrategy implements DBStrategy {
                 // return this list of maps
         return records;
     }
+    @Override
+    public void deleteOneRecord(String tableName, String id) throws ClassNotFoundException, SQLException{
+        
+       // String sql = "DELETE FROM " + tableName + " WHERE " + column + "=" + value;
+        String pKeyColumnName = "";
+        Statement stmt = conn.createStatement();
+        
+        DatabaseMetaData dmd = conn.getMetaData();
+        
+        ResultSet rs = dmd.getPrimaryKeys(null, null, tableName);
+        while(rs.next()){
+        pKeyColumnName = rs.getString("COLUMN_NAME");
+        System.out.println("PK column name is " + pKeyColumnName);
+        }
+        String sql = "delete from " + tableName + " where " + pKeyColumnName + "=" + id;
+        stmt.executeUpdate(sql); 
+        
+        
+    }
+    
+    
     
     public static void main(String[] args) throws ClassNotFoundException, SQLException {
         
         DBStrategy db = new MySqlDBStrategy();
         db.openConnection("com.mysql.jdbc.Driver", "jdbc:mysql://localhost:3306/book", "root", "admin");
-        List<Map<String, Object>> rawData = db.findAllRecords("author", 0);
+        System.out.println(db.findAllRecords("author", 0).toString());
+        db.deleteOneRecord("author", "1");
+        System.out.println(db.findAllRecords("author", 0).toString());
         db.closeConnection();
-        System.out.println(rawData);
+        
     }
     
 }

@@ -24,5 +24,6 @@ public abstract void openConnection(String driverClass, String url,
     public abstract List<Map<String, Object>> findAllRecords(String tableName, 
             int maxRecords) throws SQLException;
     
+    public void deleteOneRecord(String tableName, String id) throws ClassNotFoundException, SQLException;
     
 }
