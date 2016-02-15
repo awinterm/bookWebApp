@@ -5,9 +5,11 @@
  */
 package model;
 
+import com.mysql.jdbc.exceptions.MySQLSyntaxErrorException;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -88,24 +90,43 @@ public class MySqlDBStrategy implements DBStrategy {
                 // return this list of maps
         return records;
     }
+    
+    
     @Override
-    public void deleteOneRecord(String tableName, String id) throws ClassNotFoundException, SQLException{
+    public void deleteOneRecord(String tableName, String id) throws ClassNotFoundException, SQLException {
+       // Validate the parameters here.
         
        // String sql = "DELETE FROM " + tableName + " WHERE " + column + "=" + value;
         String pKeyColumnName = "";
-        Statement stmt = conn.createStatement();
+       // Statement stmt = conn.createStatement();
+        
         
         DatabaseMetaData dmd = conn.getMetaData();
+        ResultSet rs = null;
+      
+        // was told this is expensive. Could maybe solve this with an ENUM.
+        rs = dmd.getPrimaryKeys(null, null, tableName);
         
-        ResultSet rs = dmd.getPrimaryKeys(null, null, tableName);
+
+        // this works only if there is only one PK... in a parent child relationship I may want to 
+        // test for how many PKs I get back... if this is going to work for any table. 
+       
+            
         while(rs.next()){
         pKeyColumnName = rs.getString("COLUMN_NAME");
-        System.out.println("PK column name is " + pKeyColumnName);
+       // System.out.println("PK column name is " + pKeyColumnName);
+        
+        //String sql = "delete from " + tableName + " where " + pKeyColumnName + "=" + id;
+        
+        String sql2 = "delete from " + tableName + " where " + pKeyColumnName + "=?";
+        
+        PreparedStatement pstmt = conn.prepareStatement(sql2);
+       
+        pstmt.setInt(1, Integer.parseInt(id));
+        
+        pstmt.executeUpdate(); 
         }
-        String sql = "delete from " + tableName + " where " + pKeyColumnName + "=" + id;
-        stmt.executeUpdate(sql); 
-        
-        
+
     }
     
     
@@ -115,7 +136,7 @@ public class MySqlDBStrategy implements DBStrategy {
         DBStrategy db = new MySqlDBStrategy();
         db.openConnection("com.mysql.jdbc.Driver", "jdbc:mysql://localhost:3306/book", "root", "admin");
         System.out.println(db.findAllRecords("author", 0).toString());
-        db.deleteOneRecord("author", "1");
+        db.deleteOneRecord("author", "2");
         System.out.println(db.findAllRecords("author", 0).toString());
         db.closeConnection();
         
